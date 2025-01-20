@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interfaz_banco/view/widgets/productos_inicio/tarjeta_cuenta.dart';
+import 'package:interfaz_banco/view/widgets/productos_inicio/tipos_opciones.dart';
 import 'package:interfaz_banco/view/widgets/productos_inicio/tipos_productos.dart';
 
 class ProductosWidget extends StatelessWidget {
@@ -54,7 +55,11 @@ class ProductosWidget extends StatelessWidget {
           const SizedBox(height: 10),
           const Center(
             child: Text("1 de 2 >"),
-          )
+          ),
+          const SizedBox(height: 10),
+          const Text('¿Qué quieres hacer?', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 10),
+          const TiposOpciones(),
         ],
       ),
     );
