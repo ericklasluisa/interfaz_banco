@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interfaz_banco/view/pages/inicio_page.dart';
+import 'view/layout/main_layout.dart';
 
 void main() {
   runApp(const MyApp());
@@ -8,17 +8,16 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Banco App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
-      home: const InicioPage(),
+      home: const MainLayout(),
     );
   }
 }
