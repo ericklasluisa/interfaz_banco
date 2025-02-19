@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "186630416072",
+    "project_id": "app-banco-flutter",
+    "storage_bucket": "app-banco-flutter.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186630416072:android:3b677e1aebe18965e1e7fd",
+        "android_client_info": {
+          "package_name": "com.example.interfaz_banco"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGr0la2w2Ga7RGXi9NQKQ-q5mWUjH0P_I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
