@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PerfilPage extends StatelessWidget {
   const PerfilPage({super.key});
@@ -61,7 +62,7 @@ class PerfilPage extends StatelessWidget {
                   ),
                 ]),
                 const SizedBox(height: 28),
-                _cerrarSesion(),
+                _cerrarSesion(context),
                 const SizedBox(height: 30),
               ]),
             ),
@@ -203,24 +204,38 @@ class PerfilPage extends StatelessWidget {
     );
   }
 
-  Widget _cerrarSesion() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          Icons.logout_outlined,
-          color: Colors.blue.shade800,
-        ),
-        const SizedBox(width: 8),
-        Text(
-          'Cerrar sesión',
-          style: TextStyle(
+  Widget _cerrarSesion(BuildContext context) {
+    return InkWell(
+      onTap: () async {
+        try {
+          await FirebaseAuth.instance.signOut();
+          // Navegar al login y eliminar todas las rutas anteriores
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/login', // Asegúrate de tener esta ruta definida en tu MaterialApp
+            (route) => false,
+          );
+        } catch (e) {
+          debugPrint('Error al cerrar sesión: $e');
+        }
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.logout_outlined,
             color: Colors.blue.shade800,
-            fontSize: 15,
-            fontWeight: FontWeight.w500,
           ),
-        ),
-      ],
+          const SizedBox(width: 8),
+          Text(
+            'Cerrar sesión',
+            style: TextStyle(
+              color: Colors.blue.shade800,
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../pages/inicio_page.dart';
 import '../pages/productos_page.dart';
@@ -21,7 +22,9 @@ const List<MenuDestination> destinations = <MenuDestination>[
 ];
 
 class MainLayout extends StatefulWidget {
-  const MainLayout({super.key});
+  final User user;
+
+  const MainLayout({super.key, required this.user});
 
   @override
   State<MainLayout> createState() => _MainLayoutState();
