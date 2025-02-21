@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:interfaz_banco/view/pages/register_page.dart';
 
 class LoginFormPage extends StatefulWidget {
   const LoginFormPage({super.key});
@@ -161,19 +162,42 @@ class _LoginFormPageState extends State<LoginFormPage> {
             left: 24,
             right: 24,
             bottom: 32,
-            child: ElevatedButton(
-              onPressed: iniciarSesionFirebase,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ElevatedButton(
+                  onPressed: iniciarSesionFirebase,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    backgroundColor: Colors.yellow.shade600,
+                    disabledBackgroundColor: Colors.yellow.shade100,
+                    foregroundColor: Colors.blue.shade900,
+                  ),
+                  child: const Text('Iniciar Sesión',
+                      style: TextStyle(fontSize: 16)),
                 ),
-                backgroundColor: Colors.yellow.shade600,
-                disabledBackgroundColor: Colors.yellow.shade100,
-                foregroundColor: Colors.blue.shade900,
-              ),
-              child:
-                  const Text('Iniciar Sesión', style: TextStyle(fontSize: 16)),
+                const SizedBox(height: 12),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RegisterPage()),
+                    );
+                  },
+                  child: Text(
+                    '¿No tienes cuenta? Regístrate',
+                    style: TextStyle(
+                      color: Colors.blue.shade900,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
