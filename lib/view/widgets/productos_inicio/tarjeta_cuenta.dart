@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../../model/card_model.dart' as card_model;
 
 class TarjetaCuenta extends StatelessWidget {
-  const TarjetaCuenta({super.key});
+  final card_model.Card card;
+
+  const TarjetaCuenta({super.key, required this.card});
 
   @override
   Widget build(BuildContext context) {
@@ -22,29 +25,30 @@ class TarjetaCuenta extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "AHO419",
-                      style: TextStyle(
+                      card.cardType,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text("******7419"),
+                    Text(
+                        "******${card.number.substring(card.number.length - 4)}"),
                   ],
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.star,
-                      color: Colors.yellow.shade700,
-                      size: 18,
-                    ),
+                    card.isFrozen
+                        ? const Icon(Icons.ac_unit,
+                            color: Colors.blue, size: 18)
+                        : Icon(Icons.star,
+                            color: Colors.yellow.shade700, size: 18),
                     const SizedBox(width: 10),
-                    Text("Cta. favorita",
+                    Text(card.isFrozen ? "Congelada" : "Activa",
                         style: TextStyle(
                             fontSize: 13, color: Colors.grey.shade700)),
                   ],
@@ -63,24 +67,20 @@ class TarjetaCuenta extends StatelessWidget {
                         style: TextStyle(fontSize: 12)),
                     Row(
                       children: [
-                        const Text("\$100.89",
-                            style: TextStyle(
+                        Text("\$${card.balance.toStringAsFixed(2)}",
+                            style: const TextStyle(
                                 fontSize: 28, fontWeight: FontWeight.bold)),
                         const SizedBox(width: 8),
-                        Icon(
-                          Icons.remove_red_eye_rounded,
-                          color: Colors.blue.shade800,
-                        ),
+                        Icon(Icons.remove_red_eye_rounded,
+                            color: Colors.blue.shade800),
                       ],
                     ),
                   ],
                 ),
-                const Text(
-                  "Cuenta\nTransaccional",
+                Text(
+                  "Vence\n${card.expiryMonth}/${card.expiryYear}",
                   textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontSize: 12,
-                  ),
+                  style: const TextStyle(fontSize: 12),
                 ),
               ],
             ),

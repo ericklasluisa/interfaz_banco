@@ -61,28 +61,11 @@ class TiposProductosListState extends State<TiposProductosList> {
           ),
           const SizedBox(width: 10),
           TiposProductos(
-            nombre: "Cuentas",
-            isSelected: _selectedProduct == "Cuentas",
-            onSelected: _onProductSelected,
-          ),
-          const SizedBox(width: 10),
-          TiposProductos(
             nombre: "Tarjetas",
             isSelected: _selectedProduct == "Tarjetas",
             onSelected: _onProductSelected,
           ),
           const SizedBox(width: 10),
-          TiposProductos(
-            nombre: "Préstamos",
-            isSelected: _selectedProduct == "Préstamos",
-            onSelected: _onProductSelected,
-          ),
-          const SizedBox(width: 10),
-          TiposProductos(
-            nombre: "Inversiones",
-            isSelected: _selectedProduct == "Inversiones",
-            onSelected: _onProductSelected,
-          ),
         ],
       ),
     );

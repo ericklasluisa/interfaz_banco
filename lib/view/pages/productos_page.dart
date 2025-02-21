@@ -1,123 +1,141 @@
 import 'package:flutter/material.dart';
+import '../../controller/card_controller.dart';
+import '../../model/card_model.dart' as card_model;
+import '../widgets/productos_inicio/tarjeta_cuenta.dart';
+import 'create_card_page.dart';
 
 class ProductosPage extends StatelessWidget {
   const ProductosPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Todos mis productos',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.indigo.shade900,
-                ),
-              ),
-              const Text(
-                'Tienes 2 productos',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Mis cuentas',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-              _buildAccountCard(
-                'AHO419',
-                '220263419',
-                100.89,
-                true,
-              ),
-              const SizedBox(height: 12),
-              _buildAccountCard(
-                'AHO435',
-                '220123435',
-                80.20,
-                false,
-              ),
-              const SizedBox(height: 16),
-              _buildTotalSection(181.09),
-              const SizedBox(height: 24),
-              _buildDebitCardsSection(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAccountCard(
-    String accountName,
-    String accountNumber,
-    double balance,
-    bool isStarFilled,
-  ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade200, width: 1.5),
-      ),
-      child: ListTile(
-        leading: Icon(
-          isStarFilled ? Icons.star : Icons.star_border,
-          color: Colors.amber,
-          size: 24,
-        ),
-        title: Text(
-          accountName,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        subtitle: Text(
-          'Nro. $accountNumber',
-          style: TextStyle(
-            color: Colors.grey.shade600,
-          ),
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
+    // Removemos el Scaffold exterior y usamos solo el SingleChildScrollView
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  '\$${balance.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                Text(
-                  'Saldo disponible',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
+            Text(
+              'Todos mis productos',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.indigo.shade900,
+              ),
             ),
-            const Icon(
-              Icons.chevron_right,
-              color: Colors.grey,
+            FutureBuilder<List<card_model.Card>>(
+              future: CardController.getUserCards(context),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return Text(
+                    'Error: ${snapshot.error}',
+                    style: TextStyle(color: Colors.red.shade800),
+                  );
+                }
+
+                final cards = snapshot.data ?? [];
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Tienes ${cards.length} tarjeta${cards.length == 1 ? '' : 's'}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Mis tarjetas',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const CreateCardPage(),
+                              ),
+                            );
+                            if (result == true) {
+                              // Recargar la página para mostrar la nueva tarjeta
+                              if (context.mounted) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ProductosPage(),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.yellow.shade600,
+                            foregroundColor: Colors.indigo.shade900,
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          icon: const Icon(Icons.add, size: 18),
+                          label: const Text('Agregar tarjeta'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    if (cards.isEmpty)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.credit_card_off,
+                                size: 48,
+                                color: Colors.grey.shade500,
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'No tienes tarjetas registradas',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey.shade700,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    else
+                      ...cards
+                          .map((card) => Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: TarjetaCuenta(card: card),
+                                ),
+                              ))
+                          .toList(),
+                    if (cards.isNotEmpty) ...[
+                      const SizedBox(height: 16),
+                      _buildTotalSection(
+                        cards.fold(0.0, (sum, card) => sum + card.balance),
+                      ),
+                    ],
+                  ],
+                );
+              },
             ),
           ],
         ),
@@ -132,10 +150,8 @@ class ProductosPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            'Total de cuentas',
-            style: TextStyle(
-              fontSize: 16,
-            ),
+            'Total en tarjetas',
+            style: TextStyle(fontSize: 16),
           ),
           const SizedBox(width: 40),
           Text(
@@ -147,67 +163,6 @@ class ProductosPage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildDebitCardsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Text(
-              'Mis tarjetas de débito',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.teal,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: const Text(
-                'NUEVO',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.shade300, width: 1.5),
-          ),
-          child: const ListTile(
-            leading: Icon(
-              Icons.credit_card,
-              color: Color(0xFF1A237E),
-              size: 24,
-            ),
-            title: Text(
-              'Ver mis tarjetas',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            trailing: Icon(
-              Icons.chevron_right,
-              color: Colors.grey,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

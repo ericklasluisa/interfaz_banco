@@ -36,7 +36,8 @@ class Card {
       expiryMonth: json['expiryMonth'],
       cvv: json['cvv'],
       cardType: json['cardType'],
-      isFrozen: json['isFrozen'],
+      isFrozen:
+          json['isFrozen'] ?? json['frozen'] ?? false, // Modificamos esta línea
       pin: json['pin'],
       balance: json['balance']?.toDouble() ?? 0.0,
       user: json['user'] != null ? User.fromJson(json['user']) : null,
@@ -51,7 +52,7 @@ class Card {
         'expiryMonth': expiryMonth,
         'cvv': cvv,
         'cardType': cardType,
-        'isFrozen': isFrozen,
+        'frozen': isFrozen, // Cambiamos isFrozen por frozen al enviar
         'pin': pin,
         'balance': balance,
         'user': user?.toJson(),

@@ -1,28 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+import '../../provider/user_provider.dart';
+import 'datos_personales_page.dart';
 
 class PerfilPage extends StatelessWidget {
   const PerfilPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<UserProvider>().currentUser;
+    final initial = user?.username.isNotEmpty == true
+        ? user!.username[0].toUpperCase()
+        : '?';
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildHeader(),
+            _buildHeader(initial, user?.username ?? 'Usuario'),
             const SizedBox(height: 24),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(children: [
-                _buildSection('Información personal', [
-                  _buildListItem(
-                    icon: Icons.person_outline,
-                    title: 'Datos personales',
-                  ),
-                ]),
+                _buildPersonalInfoSection(context),
                 const SizedBox(height: 24),
                 _buildSection(
                   'Configuración',
@@ -72,7 +76,11 @@ class PerfilPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(String initial, String username) {
+    final now = DateTime.now();
+    final formattedDate =
+        DateFormat('dd MMM. yyyy | HH:mm', 'es_ES').format(now);
+
     return Container(
       color: Colors.grey.shade100,
       width: double.infinity,
@@ -82,9 +90,9 @@ class PerfilPage extends StatelessWidget {
           CircleAvatar(
             radius: 30,
             backgroundColor: Colors.indigo.shade100,
-            child: const Text(
-              'E',
-              style: TextStyle(
+            child: Text(
+              initial,
+              style: const TextStyle(
                 fontSize: 24,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -92,18 +100,18 @@ class PerfilPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Erick',
-            style: TextStyle(
+          Text(
+            username,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Color(0xFF1A237E),
             ),
           ),
           const SizedBox(height: 6),
-          const Text(
-            'Última conexión: 22 ene. 2025 | 15:51',
-            style: TextStyle(
+          Text(
+            'Última conexión: $formattedDate',
+            style: const TextStyle(
               fontSize: 13,
               color: Colors.black87,
             ),
@@ -172,6 +180,7 @@ class PerfilPage extends StatelessWidget {
     required IconData icon,
     required String title,
     bool showDivider = true,
+    VoidCallback? onTap,
   }) {
     return Column(
       children: [
@@ -192,6 +201,7 @@ class PerfilPage extends StatelessWidget {
             Icons.chevron_right,
             color: Colors.grey,
           ),
+          onTap: onTap,
         ),
         if (showDivider)
           Divider(
@@ -202,6 +212,23 @@ class PerfilPage extends StatelessWidget {
           ),
       ],
     );
+  }
+
+  Widget _buildPersonalInfoSection(BuildContext context) {
+    return _buildSection('Información personal', [
+      _buildListItem(
+        icon: Icons.person_outline,
+        title: 'Datos personales',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const DatosPersonalesPage(),
+            ),
+          );
+        },
+      ),
+    ]);
   }
 
   Widget _cerrarSesion(BuildContext context) {

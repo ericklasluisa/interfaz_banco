@@ -1,6 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:interfaz_banco/view/pages/register_page.dart';
+import 'package:provider/provider.dart';
+import '../../provider/user_provider.dart';
+import '../../controller/user_controller.dart';
 
 class LoginFormPage extends StatefulWidget {
   const LoginFormPage({super.key});
@@ -12,6 +14,7 @@ class LoginFormPage extends StatefulWidget {
 class _LoginFormPageState extends State<LoginFormPage> {
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final UserController _authController = UserController();
 
   void _mostrarError(String mensaje) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -27,35 +30,23 @@ class _LoginFormPageState extends State<LoginFormPage> {
     );
   }
 
-  iniciarSesionFirebase() async {
+  Future<void> iniciarSesionFirebase() async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final user = await _authController.loginUser(
         email: _userController.text,
         password: _passwordController.text,
       );
-      if (!mounted) return; // Verificar si el widget sigue montado
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      if (!mounted) return; // Verificar si el widget sigue montado
-      switch (e.code) {
-        case 'user-not-found':
-          _mostrarError('No existe una cuenta con este correo electrónico');
-          break;
-        case 'wrong-password':
-          _mostrarError('Credenciales incorrectas');
-          break;
-        case 'invalid-email':
-          _mostrarError('El formato del correo electrónico no es válido');
-          break;
-        case 'user-disabled':
-          _mostrarError('Esta cuenta ha sido deshabilitada');
-          break;
-        default:
-          _mostrarError('Error al iniciar sesión: ${e.message}');
+
+      if (!mounted) return;
+
+      if (user != null) {
+        // Guardar usuario en el provider
+        context.read<UserProvider>().setUser(user);
+        Navigator.pop(context);
       }
     } catch (e) {
-      if (!mounted) return; // Verificar si el widget sigue montado
-      _mostrarError('Ocurrió un error inesperado');
+      if (!mounted) return;
+      _mostrarError(e.toString());
     }
   }
 
