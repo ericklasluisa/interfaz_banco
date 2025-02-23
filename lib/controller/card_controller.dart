@@ -169,4 +169,24 @@ class CardController {
       throw Exception('Error buscando la tarjeta: $e');
     }
   }
+
+  static Future<void> deleteCard(int cardId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$_baseUrl/cards/$cardId'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      developer.log('Delete card response: ${response.statusCode}');
+
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        throw Exception('Error al eliminar la tarjeta: ${response.statusCode}');
+      }
+    } catch (e, stackTrace) {
+      developer.log('Error deleting card', error: e, stackTrace: stackTrace);
+      throw Exception('Error al eliminar la tarjeta: $e');
+    }
+  }
 }

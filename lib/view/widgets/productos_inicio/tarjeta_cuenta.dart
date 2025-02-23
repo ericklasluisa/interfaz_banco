@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import '../../../model/card_model.dart' as card_model;
 
-class TarjetaCuenta extends StatelessWidget {
+class TarjetaCuenta extends StatefulWidget {
+  // Cambiar a StatefulWidget
   final card_model.Card card;
 
   const TarjetaCuenta({super.key, required this.card});
+
+  @override
+  State<TarjetaCuenta> createState() => _TarjetaCuentaState();
+}
+
+class _TarjetaCuentaState extends State<TarjetaCuenta> {
+  bool _showBalance = true; // Variable para controlar la visibilidad del saldo
 
   @override
   Widget build(BuildContext context) {
@@ -29,26 +37,26 @@ class TarjetaCuenta extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      card.cardType,
+                      widget.card.cardType,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                        "******${card.number.substring(card.number.length - 4)}"),
+                        "******${widget.card.number.substring(widget.card.number.length - 4)}"),
                   ],
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    card.isFrozen
+                    widget.card.isFrozen
                         ? const Icon(Icons.ac_unit,
                             color: Colors.blue, size: 18)
                         : Icon(Icons.star,
                             color: Colors.yellow.shade700, size: 18),
                     const SizedBox(width: 10),
-                    Text(card.isFrozen ? "Congelada" : "Activa",
+                    Text(widget.card.isFrozen ? "Congelada" : "Activa",
                         style: TextStyle(
                             fontSize: 13, color: Colors.grey.shade700)),
                   ],
@@ -67,18 +75,33 @@ class TarjetaCuenta extends StatelessWidget {
                         style: TextStyle(fontSize: 12)),
                     Row(
                       children: [
-                        Text("\$${card.balance.toStringAsFixed(2)}",
-                            style: const TextStyle(
-                                fontSize: 28, fontWeight: FontWeight.bold)),
+                        Text(
+                          _showBalance
+                              ? "\$${widget.card.balance.toStringAsFixed(2)}"
+                              : "****.**",
+                          style: const TextStyle(
+                              fontSize: 28, fontWeight: FontWeight.bold),
+                        ),
                         const SizedBox(width: 8),
-                        Icon(Icons.remove_red_eye_rounded,
-                            color: Colors.blue.shade800),
+                        IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          onPressed: () {
+                            setState(() => _showBalance = !_showBalance);
+                          },
+                          icon: Icon(
+                            _showBalance
+                                ? Icons.remove_red_eye_rounded
+                                : Icons.remove_red_eye_outlined,
+                            color: Colors.blue.shade800,
+                          ),
+                        ),
                       ],
                     ),
                   ],
                 ),
                 Text(
-                  "Vence\n${card.expiryMonth}/${card.expiryYear}",
+                  "Vence\n${widget.card.expiryMonth}/${widget.card.expiryYear}",
                   textAlign: TextAlign.right,
                   style: const TextStyle(fontSize: 12),
                 ),
