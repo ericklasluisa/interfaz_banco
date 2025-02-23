@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:interfaz_banco/notifications/recibir_notificaciones_service.dart';
 import 'package:interfaz_banco/view/pages/register_page.dart';
 import 'package:provider/provider.dart';
 import '../../provider/user_provider.dart';
@@ -40,6 +41,8 @@ class _LoginFormPageState extends State<LoginFormPage> {
       if (!mounted) return;
 
       if (user != null) {
+        // Subir el token de Firebase Cloud Messaging
+        RecibirNotificacionesService().uploadFcmToken();
         // Guardar usuario en el provider
         context.read<UserProvider>().setUser(user);
         Navigator.pop(context);

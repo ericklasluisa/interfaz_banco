@@ -189,4 +189,30 @@ class CardController {
       throw Exception('Error al eliminar la tarjeta: $e');
     }
   }
+
+  static Future<String?> findUserByCard(int cardId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/cards/$cardId'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      developer.log('Find card response: ${response.statusCode}');
+      developer.log('Find card body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        dynamic cardJson = json.decode(response.body);
+        final card = card_model.Card.fromJson(cardJson);
+
+        return card.user?.email;
+      } else {
+        throw Exception('Error al buscar tarjetas: ${response.statusCode}');
+      }
+    } catch (e, stackTrace) {
+      developer.log('Error finding card', error: e, stackTrace: stackTrace);
+      throw Exception('Error buscando la tarjeta: $e');
+    }
+  }
 }

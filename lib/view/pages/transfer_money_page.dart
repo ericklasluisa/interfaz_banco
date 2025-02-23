@@ -113,7 +113,8 @@ class _TransferMoneyPageState extends State<TransferMoneyPage> {
     setState(() => _isLoading = true);
 
     try {
-      final payment = await PaymentController.makePayment(
+      final payment = await PaymentController().makePayment(
+        context, // Añadimos el contexto como primer parámetro
         _selectedSourceCard!.id!,
         _destinationCardController.text,
         double.parse(_amountController.text),
