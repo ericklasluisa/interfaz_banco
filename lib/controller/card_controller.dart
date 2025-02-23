@@ -90,4 +90,83 @@ class CardController {
       throw Exception('Error en la conexión: $e');
     }
   }
+
+  static Future<card_model.Card> toggleFreezeCard(int cardId) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$_baseUrl/cards/freeze/$cardId'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      developer.log('Freeze card response: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return card_model.Card.fromJson(json.decode(response.body));
+      } else {
+        throw Exception(
+            'Error al congelar/descongelar la tarjeta: ${response.statusCode}');
+      }
+    } catch (e, stackTrace) {
+      developer.log('Error freezing card', error: e, stackTrace: stackTrace);
+      throw Exception('Error en la conexión: $e');
+    }
+  }
+
+  static Future<card_model.Card> toggleUnfreezeCard(int cardId) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$_baseUrl/cards/unfreeze/$cardId'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      developer.log('Unfreeze card response: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return card_model.Card.fromJson(json.decode(response.body));
+      } else {
+        throw Exception(
+            'Error al descongelar la tarjeta: ${response.statusCode}');
+      }
+    } catch (e, stackTrace) {
+      developer.log('Error unfreezing card', error: e, stackTrace: stackTrace);
+      throw Exception('Error en la conexión: $e');
+    }
+  }
+
+  static Future<card_model.Card?> findCardByNumber(String cardNumber) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/cards'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      developer.log('Find card response: ${response.statusCode}');
+      developer.log('Find card body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        List<dynamic> cardsJson = json.decode(response.body);
+        final cards =
+            cardsJson.map((json) => card_model.Card.fromJson(json)).toList();
+
+        // Buscar la tarjeta por número
+        final card = cards.firstWhere(
+          (card) => card.number == cardNumber,
+          orElse: () => throw Exception('Tarjeta no encontrada'),
+        );
+
+        return card;
+      } else {
+        throw Exception('Error al buscar tarjetas: ${response.statusCode}');
+      }
+    } catch (e, stackTrace) {
+      developer.log('Error finding card', error: e, stackTrace: stackTrace);
+      throw Exception('Error buscando la tarjeta: $e');
+    }
+  }
 }

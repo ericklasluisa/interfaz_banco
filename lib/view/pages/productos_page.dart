@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../controller/card_controller.dart';
 import '../../model/card_model.dart' as card_model;
-import '../widgets/productos_inicio/tarjeta_cuenta.dart';
+import '../widgets/productos/tarjeta_detalle.dart';
 import 'create_card_page.dart';
 
 class ProductosPage extends StatelessWidget {
@@ -118,15 +118,7 @@ class ProductosPage extends StatelessWidget {
                         ),
                       )
                     else
-                      ...cards
-                          .map((card) => Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: TarjetaCuenta(card: card),
-                                ),
-                              ))
-                          .toList(),
+                      ...cards.map((card) => TarjetaDetalle(card: card)),
                     if (cards.isNotEmpty) ...[
                       const SizedBox(height: 16),
                       _buildTotalSection(

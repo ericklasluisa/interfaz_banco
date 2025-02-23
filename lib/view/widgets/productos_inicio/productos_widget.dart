@@ -7,8 +7,22 @@ import '../../../controller/card_controller.dart';
 import '../../../model/card_model.dart' as card_model;
 import '../../../provider/user_provider.dart';
 
-class ProductosWidget extends StatelessWidget {
+class ProductosWidget extends StatefulWidget {
+  // Cambiamos a StatefulWidget
   const ProductosWidget({super.key});
+
+  @override
+  State<ProductosWidget> createState() => _ProductosWidgetState();
+}
+
+class _ProductosWidgetState extends State<ProductosWidget> {
+  Key _futureBuilderKey = UniqueKey(); // Clave para forzar reconstrucción
+
+  void _refreshCards() {
+    setState(() {
+      _futureBuilderKey = UniqueKey();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +69,7 @@ class ProductosWidget extends StatelessWidget {
               }
 
               return FutureBuilder<List<card_model.Card>>(
+                key: _futureBuilderKey, // Agregamos la key aquí
                 future: CardController.getUserCards(context),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -135,7 +150,7 @@ class ProductosWidget extends StatelessWidget {
           const Text('¿Qué quieres hacer?',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
-          const TiposOpciones(),
+          TiposOpciones(onTransferComplete: _refreshCards), // Pasamos callback
         ],
       ),
     );

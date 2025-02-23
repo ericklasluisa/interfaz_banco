@@ -85,4 +85,13 @@ class Card {
       user: user ?? this.user,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Card && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }
