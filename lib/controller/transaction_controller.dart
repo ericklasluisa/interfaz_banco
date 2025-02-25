@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../model/transaction_model.dart';
 
 class TransactionController {
-  static const String _baseUrl = 'http://10.0.2.2:9090';
+  static const String _baseUrl = 'http://10.40.16.114:9090';
 
   static Future<List<Transaction>> getCardTransactions(int cardId) async {
     try {

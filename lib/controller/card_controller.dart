@@ -8,7 +8,7 @@ import '../provider/user_provider.dart';
 
 class CardController {
   static const String _baseUrl =
-      'http://10.0.2.2:9090'; //!cambiar cuando se haga APK
+      'http://10.40.16.114:9090'; //!cambiar cuando se haga APK
 
   static Future<List<card_model.Card>> getUserCards(
       BuildContext context) async {

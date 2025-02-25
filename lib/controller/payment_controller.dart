@@ -14,7 +14,7 @@ class PaymentController {
   final EnviarNotificacionService _enviarNotificacionService =
       EnviarNotificacionService();
 
-  static const String _baseUrl = 'http://10.0.2.2:9090';
+  static const String _baseUrl = 'http://10.40.16.114:9090';
 
   Future<Payment> makePayment(BuildContext context, int sourceCardId,
       String destinationCardNumber, double amount) async {

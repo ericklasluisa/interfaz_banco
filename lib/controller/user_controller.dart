@@ -5,7 +5,8 @@ import '../model/user_model.dart';
 
 class UserController {
   final auth.FirebaseAuth _firebaseAuth = auth.FirebaseAuth.instance;
-  final String _baseUrl = 'http://10.0.2.2:9090'; //!cambiar cuando se haga APK
+  final String _baseUrl =
+      'http://10.40.16.114:9090'; //!cambiar cuando se haga APK
 
   Future<User?> registerUser({
     required String email,
